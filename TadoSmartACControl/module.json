@@ -1,0 +1,14 @@
+{
+	"id": "{A27B728F-D26D-4AAA-B433-CF0DF57D1D75}",
+	"name": "TadoSmartACControl",
+	"type": 3,
+	"vendor": "Tado",
+	"aliases": 
+	[
+            "Smart AC Control"
+	],
+	"parentRequirements": [],
+	"childRequirements": [],
+	"implemented": [],
+	"prefix": "Tado"
+}
