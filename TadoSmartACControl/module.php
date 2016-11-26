@@ -242,7 +242,7 @@
          * @param string $Temperature
          * @param string $FanSpeed
          */
-        public function ACSetMode($Mode, $Temperature, $FanSpeed)
+        public function ACSetMode(string $Mode, string $Temperature, string $FanSpeed)
         {
             $this->RefreshToken();
             $Homeid = $this->Api("me")->homes[0]->id;
