@@ -84,7 +84,7 @@
                     { "name": "Zones", "type": "Select", "caption": "Zones",
                         "options": 
                         [
-                            '.$Zone.'               
+                            '.@$Zone.'               
                         ]
                      },
                     { "name": "Poller", "type": "IntervalBox", "caption": "Seconds" }
