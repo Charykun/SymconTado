@@ -177,10 +177,6 @@
             if(isset($result->access_token))
             {
                 $this->SetBuffer("AccessToken", $result->access_token);
-            }
-	    else
-	    {
-		$this->Login();    
 	    }
         }
 
