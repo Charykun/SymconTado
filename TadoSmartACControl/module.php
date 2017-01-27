@@ -181,6 +181,10 @@
                 $this->SetBuffer("AccessToken", $result->access_token);
 		$this->SendDebug("AccessToken", $result->access_token, false);
 	    }
+	    else
+	    {
+		$this->Login();    
+	    }
         }
 
         /**
