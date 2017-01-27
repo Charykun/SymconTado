@@ -178,6 +178,10 @@
             {
                 $this->SetBuffer("AccessToken", $result->access_token);
             }
+	    else
+	    {
+		$this->Login();    
+	    }
         }
 
         /**
@@ -212,9 +216,9 @@
             {
                 $this->SetValue($this->GetIDForIdent("power"), false);
             }
-            $this->SetValue($this->GetIDForIdent("mode"), $State->setting->mode);
-            $this->SetValue($this->GetIDForIdent("temperature"), (float) $State->setting->temperature->celsius);
-            $this->SetValue($this->GetIDForIdent("fanSpeed"), $State->setting->fanSpeed);
+            $this->SetValue($this->GetIDForIdent("mode"), @$State->setting->mode);
+            $this->SetValue($this->GetIDForIdent("temperature"), (float) @$State->setting->temperature->celsius);
+            $this->SetValue($this->GetIDForIdent("fanSpeed"), @$State->setting->fanSpeed);
         }
 
         /**
