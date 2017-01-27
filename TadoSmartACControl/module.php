@@ -177,6 +177,7 @@
             if(isset($result->access_token))
             {
                 $this->SetBuffer("AccessToken", $result->access_token);
+		$this->SendDebug("AccessToken", $result->access_token, false);
 	    }
         }
 
