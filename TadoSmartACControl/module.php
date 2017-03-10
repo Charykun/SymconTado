@@ -156,6 +156,7 @@
                 $this->SetStatus(200);
                 $this->SendDebug("Error",$result->errors[0]->title . $result->errors[0]->code, false);
                 $this->Log($result->errors[0]->title . $result->errors[0]->code);
+		exit;
             }
             else
             {
