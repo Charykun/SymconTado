@@ -119,6 +119,7 @@
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-webapp&password=$Password&username=$Username&scope=home.user&grant_type=password");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
             if(isset($result->access_token))
@@ -147,6 +148,7 @@
             curl_setopt($ch, CURLOPT_URL, 'https://my.tado.com/api/v2/'.$Api);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
             if(isset($result->errors))
@@ -174,6 +176,7 @@
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-webapp&grant_type=refresh_token&refresh_token=".$refresh_token."&scope=home.user");
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
             if(isset($result->access_token))
