@@ -175,7 +175,7 @@
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://my.tado.com/oauth/token');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-webapp&grant_type=refresh_token&refresh_token=".$refresh_token."&scope=home.user");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-web-app&grant_type=refresh_token&refresh_token=".$refresh_token."&scope=home.user");
 	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
