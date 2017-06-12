@@ -117,7 +117,7 @@
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://my.tado.com/oauth/token');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-webapp&password=$Password&username=$Username&scope=home.user&grant_type=password");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-web-app&password=$Password&username=$Username&scope=home.user&grant_type=password&client_secret=wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
