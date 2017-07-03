@@ -23,6 +23,8 @@
             $this->RegisterPropertyString("AccessToken", "");
             $this->RegisterPropertyInteger("Zones", 0);
             $this->RegisterPropertyInteger("Poller", 1);
+		
+	    $this->RegisterTimer("Update", 0, "Tado_Update($this->InstanceID);");	
         }
 
         /**
@@ -42,7 +44,7 @@
             $this->RegisterVariableString("fanSpeed", "FanSpeed", "", 7);
 
             $this->Login();
-            $this->RegisterTimer("Update", $this->ReadPropertyInteger("Poller") * 1000, "Tado_Update($this->InstanceID);");
+            $this->SetTimerInterval("Update", $this->ReadPropertyInteger("Poller") * 1000);
         }
 
         /**
