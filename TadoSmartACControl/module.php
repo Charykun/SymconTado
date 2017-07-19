@@ -117,7 +117,7 @@
             $this->SetBuffer("AccessToken", "");
             $this->SetBuffer("RefreshToken", "");
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://my.tado.com/oauth/token');
+            curl_setopt($ch, CURLOPT_URL, 'https://auth.tado.com/oauth/token');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
             curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-web-app&password=$Password&username=$Username&scope=home.user&grant_type=password&client_secret=wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
