@@ -276,7 +276,7 @@
          * @param integer $ID
          * @param type $Value
          */
-        private function SetValue($ID, $Value)
+        protected function SetValue($ID, $Value)
         {
             if ( GetValue($ID) !== $Value ) { SetValue($ID, $Value); }
         }
