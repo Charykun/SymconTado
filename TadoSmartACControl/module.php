@@ -1,4 +1,5 @@
-<?php                                                                           
+<?php
+
     class TadoSmartACControl extends IPSModule
     {
         /**
@@ -12,19 +13,16 @@
 
         /**
          * Create
-         */         
+         */
         public function Create()
         {
             //Never delete this line!
             parent::Create();
 
-            $this->RegisterPropertyString("Username", "");
-            $this->RegisterPropertyString("Password", "");
             $this->RegisterPropertyString("AccessToken", "");
             $this->RegisterPropertyInteger("Zones", 0);
             $this->RegisterPropertyInteger("Poller", 1);
-		
-	    $this->RegisterTimer("Update", 0, "Tado_Update($this->InstanceID);");	
+            $this->RegisterTimer("Update", 0, "Tado_Update($this->InstanceID);");
         }
 
         /**
@@ -43,7 +41,7 @@
             $this->RegisterVariableFloat("temperature", "Temperature SET", "~Temperature", 6);
             $this->RegisterVariableString("fanSpeed", "FanSpeed", "", 7);
 
-            $this->Login();
+            // $this->Login();
             $this->SetTimerInterval("Update", $this->ReadPropertyInteger("Poller") * 1000);
         }
 
@@ -66,6 +64,7 @@
                     {
                         $Zone .= '{ "label": "'.$Zones[$i]->name.' ('.$Zones[$i]->id.')", "value": '.$Zones[$i]->id.' },';
                     }
+                    $Zone = substr($Zone, 0, -1);
                     if($this->ReadPropertyInteger("Zones") > 0)
                     {
                         $serialNo = "Device: " . $Zones[$this->ReadPropertyInteger("Zones") - 1]->devices[0]->serialNo;
@@ -75,26 +74,26 @@
             }
             else
             {
-                $Zone = '{ "label": "Please Login ...", "value": 0 },';
+                $Name = "Please Login ...";
+                //$Zone = '{ "label": "Please Login ...", "value": 0 }';
             }
             return '
-            { 
+            {
                  "elements":
                 [
-                    { "type": "ValidationTextBox", "name": "Username", "caption": "Username" },
-                    { "type": "PasswordTextBox", "name": "Password", "caption": "Password" },
+                    { "type": "Label", "label": "'.@$Name.'" },
+                    { "type": "Label", "label": "'.@$serialNo.'" },
                     { "name": "Zones", "type": "Select", "caption": "Zones",
-                        "options": 
+                        "options":
                         [
-                            '.@$Zone.'               
+                             '.@$Zone.'
                         ]
                      },
                     { "name": "Poller", "type": "IntervalBox", "caption": "Seconds" }
                 ],
-                "actions": 
-                [ 
-                    { "type": "Label", "label": "'.@$Name.'" },
-                    { "type": "Label", "label": "'.@$serialNo.'" }
+                "actions":
+                [
+                     { "type": "Button", "caption": "LOGIN", "onClick": "echo Tado_GetCodeURL('.$this->InstanceID.');" }
                 ],
                 "status":
                 [
@@ -112,18 +111,18 @@
          */
         private function Login()
         {
-            $Username = $this->ReadPropertyString("Username");
-            $Password = $this->ReadPropertyString("Password");
+            $device_code = $this->GetBuffer("device_code");
             $this->SetBuffer("AccessToken", "");
             $this->SetBuffer("RefreshToken", "");
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://auth.tado.com/oauth/token');
+            curl_setopt($ch, CURLOPT_URL, 'https://login.tado.com/oauth2/token');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-web-app&password=$Password&username=$Username&scope=home.user&grant_type=password&client_secret=wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=1bb50063-6b0c-4d11-bd99-387f4a91cc46&device_code=".$device_code."&grant_type=urn:ietf:params:oauth:grant-type:device_code");
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
+            $this->SendDebug("Login", print_r($result, true), false);
             if(isset($result->access_token))
             {
                 $this->SetStatus(102);
@@ -131,6 +130,7 @@
                 $this->SetBuffer("AccessToken", $result->access_token);
                 $this->SetBuffer("RefreshToken", $result->refresh_token);
                 $this->SendDebug("RefreshToken", $result->refresh_token, false);
+                $this->ReloadForm();
             }
             else
             {
@@ -150,7 +150,7 @@
             curl_setopt($ch, CURLOPT_URL, 'https://my.tado.com/api/v2/'.$Api);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
+	        curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
             if(isset($result->errors))
@@ -158,7 +158,7 @@
                 $this->SetStatus(200);
                 $this->SendDebug("Error",$result->errors[0]->title . $result->errors[0]->code, false);
                 $this->Log($result->errors[0]->title . $result->errors[0]->code);
-		exit;
+		        exit;
             }
             else
             {
@@ -175,22 +175,49 @@
         {
             $refresh_token = $this->GetBuffer("RefreshToken");
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://auth.tado.com/oauth/token');
+            curl_setopt($ch, CURLOPT_URL, 'https://login.tado.com/oauth2/token');
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=tado-web-app&client_secret=wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc&grant_type=refresh_token&refresh_token=".$refresh_token."&scope=home.user");
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=1bb50063-6b0c-4d11-bd99-387f4a91cc46&refresh_token=".$refresh_token."&grant_type=refresh_token");
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	        curl_setopt($ch, CURLOPT_TIMEOUT, $this->ReadPropertyInteger("Poller"));
             $result = json_decode(curl_exec($ch));
             curl_close($ch);
             if(isset($result->access_token))
             {
                 $this->SetBuffer("AccessToken", $result->access_token);
-		$this->SendDebug("AccessToken", $result->access_token, false);
-	    }
-	    else
-	    {
-		$this->Login();    
-	    }
+                $this->SetBuffer("RefreshToken", $result->refresh_token);
+	        }
+	        else
+	        {
+		        $this->Login();
+	        }
+        }
+
+        public function GetCodeURL()
+        {
+           // return "https://login.tado.com/oauth2/device?user_code=ZQ5QCN";
+           $this->SetBuffer("AccessToken", "");
+           $this->SetBuffer("RefreshToken", "");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://login.tado.com/oauth2/device_authorize');
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, "client_id=1bb50063-6b0c-4d11-bd99-387f4a91cc46&scope=offline_access");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = json_decode(curl_exec($ch));
+            curl_close($ch);
+            $this->SendDebug("GetCodeURL", print_r($result, true), false);
+            if(isset($result->verification_uri_complete))
+            {
+                $this->SetBuffer("device_code", $result->device_code);
+                $this->SendDebug("device_code", (string)$result->device_code, false);
+                $this->SendDebug("verification_uri_complete", (string)$result->verification_uri_complete, false);
+                return (string)$result->verification_uri_complete;
+            }
+            else
+            {
+                $this->SendDebug("GetCodeURL", print_r($result, true), false);
+                return "";
+            }
         }
 
         /**
