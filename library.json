@@ -1,9 +1,9 @@
 {
-	"id": "{C901A3A3-66C4-4897-9F91-E613DEC11F2F}",
-	"author": "Charykun",
-	"name": "SymconTado",
-	"url": "https://github.com/Charykun",
-	"version": "1.0",
-	"build": 0,
-	"date": 0
+  "author": "Charykun",
+  "build": 0,
+  "date": 0,
+  "id": "{C901A3A3-66C4-4897-9F91-E613DEC11F2F}",
+  "name": "SymconTado",
+  "url": "https://github.com/Charykun",
+  "version": "1.1"
 }
