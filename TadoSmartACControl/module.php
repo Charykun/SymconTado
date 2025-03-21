@@ -161,7 +161,7 @@ class TadoSmartACControl extends IPSModule
      */
     private function RefreshToken()
     {
-        if ($this->GetBuffer("Timestamp") + 300 > time()) return;
+        if ((int)$this->GetBuffer("Timestamp") + 600 > time()) return;
         $refresh_token = $this->GetBuffer("RefreshToken");
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://login.tado.com/oauth2/token');
