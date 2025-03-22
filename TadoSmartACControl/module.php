@@ -161,7 +161,7 @@ class TadoSmartACControl extends IPSModule
      */
     private function RefreshToken()
     {
-        if ((int)$this->GetBuffer("Timestamp") + 600 > time()) return;
+        if ((int)$this->GetBuffer("Timestamp") + 590 > time()) return;
         $this->SetBuffer("Timestamp", time());
         $refresh_token = $this->GetBuffer("RefreshToken");
         $ch = curl_init();
