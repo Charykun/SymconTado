@@ -126,6 +126,7 @@ class TadoSmartACControl extends IPSModule
             $this->ReloadForm();
         } else {
             $this->SetStatus(201);
+            $this->SetValue($this->GetIDForIdent("Link"), false);
         }
     }
 
@@ -148,6 +149,7 @@ class TadoSmartACControl extends IPSModule
             $this->SetStatus(200);
             $this->SendDebug("Error", $result->errors[0]->title . $result->errors[0]->code, false);
             $this->Log($result->errors[0]->title . $result->errors[0]->code);
+            $this->SetValue($this->GetIDForIdent("Link"), false);
             exit;
         } else {
             $this->SetStatus(102);
@@ -180,6 +182,7 @@ class TadoSmartACControl extends IPSModule
         } else {
             $this->SetStatus(200);
             $this->SetBuffer("Timestamp", 0);
+            $this->SetValue($this->GetIDForIdent("Link"), false);
             // $this->Login();
         }
     }
